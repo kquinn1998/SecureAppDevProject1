@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>Login Page</title>
+	<title>Login</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 <!--===============================================================================================-->	
@@ -69,7 +69,7 @@
 					</div>
 
                     <div class="text-center p-t-90">
-						<a class="txt1" href="#">
+						<a class="txt1" href="CreateAccount.html.php">
 							Create Account
 						</a>
 					</div>
