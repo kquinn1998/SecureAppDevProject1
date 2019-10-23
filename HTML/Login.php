@@ -29,10 +29,10 @@
     if ($stmt->num_rows > 0) {
         $stmt->bind_result($id, $password);
         $stmt->fetch();
-        if ($_POST['pass'] == $password) {
+        if (md5($_POST['pass']) == $password) {
             session_regenerate_id();
 		    $_SESSION['loggedin'] = TRUE;
-		    $_SESSION['name'] = $_POST['username'];
+		    $_SESSION['username'] = $_POST['username'];
 		    $_SESSION['id'] = $id;
             header("location:WelcomePage.html.php");
         } else {

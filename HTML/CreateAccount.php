@@ -1,7 +1,7 @@
 <?php
     $servername = "localhost";
     $username = "root";
-    $password = "";
+    $dbpassword = "";
     $dbname = "C00216607_securedev";
     
     // Creating a connection
@@ -10,9 +10,13 @@
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
     } 
-    // Creating a database named newDB
+    $username = $_POST['username'];
+    $password = $_POST['pass'];
+
+    $hash = $hash = md5($password); // works, but dangerous
+
     $sql = "INSERT INTO users (username, pass)
-            VALUES ('" . $_POST['username'] . "','" .  $_POST['pass'] . "')";
+            VALUES ('$username','$hash')";
 
     if ($conn->query($sql) === TRUE) {
         header('location:Login.html.php');

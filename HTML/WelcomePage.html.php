@@ -1,7 +1,8 @@
 <?php
-    session_start();
+	session_start();
     if (!isset($_SESSION['loggedin'])) {
-        header('Location: index.html');
+		session_destroy();
+        header('location:Login.html.php');
         exit();
     }
 ?>
@@ -9,7 +10,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>Create Account</title>
+	<title>Welcome</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 <!--===============================================================================================-->	
@@ -40,7 +41,7 @@
 	<div class="limiter">
 		<div class="container-login100" style="background-image: url('images/bg-01.jpg');">
 			<div class="wrap-login100">
-				<div class="login100-form validate-form" action="CreateAccount.php" method="POST">
+				<form class="login100-form validate-form" action="Logout.php" method="POST">
 					<span class="login100-form-logo">
 						<i class="zmdi zmdi-landscape"></i>
 					</span>
@@ -48,8 +49,14 @@
 					<span class="login100-form-title p-b-34 p-t-27">
 						Welcome !
 					</span>
+
+					<div class="container-login100-form-btn">
+						<button class="login100-form-btn">
+							Logout
+						</button>
 					</div>
-				</div>
+					</div>
+				</form>
 			</div>
 		</div>
 	</div>
