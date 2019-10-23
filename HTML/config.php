@@ -2,6 +2,7 @@
     $servername = "localhost";
     $username = "root";
     $password = "";
+    $dbname = "C00216607_securedev";
     
     // Creating a connection
     $conn = new mysqli($servername, $username, $password);
@@ -12,12 +13,22 @@
     // Creating a database named newDB
     $sql = "CREATE DATABASE IF NOT EXISTS C00216607_securedev";
     if ($conn->query($sql) === TRUE) {
-        echo "Database created successfully with the name C00216607_securedev";
+        $conn = new mysqli($servername, $username, $password, $dbname);
+        $sql = "CREATE TABLE IF NOT EXISTS users (
+            id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            username VARCHAR(30) NOT NULL,
+            pass VARCHAR(40) NOT NULL,
+            reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+            )";
+        if ($conn->query($sql) === TRUE) {
+
+        } else {
+            echo "Error creating users table: " . $conn->server;
+        }
     } else {
         echo "Error creating database: " . $conn->error;
     }
     
     // closing connection
     $conn->close();
-    ?>
 ?>

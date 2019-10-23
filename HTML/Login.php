@@ -1,3 +1,7 @@
+<?php
+    include 'config.php';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -64,7 +68,13 @@
 						</button>
 					</div>
 
-					<div class="text-center p-t-90">
+                    <div class="text-center p-t-90">
+						<a class="txt1" href="#">
+							Create Account
+						</a>
+					</div>
+
+					<div class="text-center p-t-20">
 						<a class="txt1" href="#">
 							Forgot Password?
 						</a>
