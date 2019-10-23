@@ -1,22 +1,19 @@
 <?php
-    $servername = "localhost";
-    $username = "root";
-    $dbpassword = "";
-    $dbname = "C00216607_securedev";
-    
-    // Creating a connection
-    $conn = new mysqli($servername, $username, $password, $dbname);
-    // Check connection
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    } 
+    include 'con_file.php';
+
     $username = $_POST['username'];
     $password = $_POST['pass'];
+    $reg_time = time();
+
+    //Salting pass
+
+    $password = $password . $reg_time . $username;
 
     $hash = $hash = md5($password); // works, but dangerous
 
-    $sql = "INSERT INTO users (username, pass)
-            VALUES ('$username','$hash')";
+
+    $sql = "INSERT INTO users (username, pass, reg_time, active)
+            VALUES ('$username','$hash','$reg_time', 'FALSE')";
 
     if ($conn->query($sql) === TRUE) {
         header('location:Login.html.php');
@@ -27,4 +24,14 @@
     
     // closing connection
     $conn->close();
+
+    function generateRandomString($length) {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString;
+    }
 ?>

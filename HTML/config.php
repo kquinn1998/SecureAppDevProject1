@@ -17,8 +17,10 @@
         $sql = "CREATE TABLE IF NOT EXISTS users (
             id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
             username VARCHAR(30) NOT NULL,
-            pass VARCHAR(40) NOT NULL,
-            reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+            pass VARCHAR(128) NOT NULL,
+            reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            reg_time VARCHAR(30) NOT NULL,
+            active BOOLEAN NOT NULL
             )";
         if ($conn->query($sql) === TRUE) {
 
