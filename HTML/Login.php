@@ -4,6 +4,17 @@
     //db connection
     include "con_file.php";
 
+    //if attempts hasnt started init
+    if(!isset($_SESSION['attempts'])){
+        $_SESSION['attempts'] = 0;
+    }else {
+        //checking if limit reached
+        if($_SESSION['attempts'] >= 5){
+            $conn->close();
+            header("location:Login.html.php");
+        }
+    }
+
     //user input credentials;
     $username = $_POST['username'];
     $password = $_POST['pass'];
@@ -44,10 +55,12 @@
             header("location:WelcomePage.html.php");
         } else {
             //wrong password
+            $_SESSION['invalid_username'] = $username;
             header("location:Login.html.php");
         }
     } else {
         //wrong username
+        $_SESSION['invalid_username'] = $username;
         header("location:Login.html.php");
     }
     $stmt->close();

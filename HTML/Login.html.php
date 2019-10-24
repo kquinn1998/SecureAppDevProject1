@@ -72,8 +72,18 @@
 						</button>
 					</div>
 
+					<?php
+					if (isset($_SESSION['invalid_username'])) {
+						echo "	<div class='text-center p-t-10'>
+									<a class='txt1'>
+										The username " . $_SESSION['invalid_username'] . " or password are invalid.
+									</a>
+								</div>";
+					}				
+					?>
+
                     <div class="text-center p-t-90">
-						<a class="txt1" href="CreateAccount.html.php">
+						<a class="txt1 font-weight-bolder " href="CreateAccount.html.php">
 							Create Account
 						</a>
 					</div>
