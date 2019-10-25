@@ -1,5 +1,7 @@
 <?php
+    //connection made
     include 'con_file.php';
+    include 'filter_class.php';
 
     $username = $_POST['username'];
     $password = $_POST['pass'];
