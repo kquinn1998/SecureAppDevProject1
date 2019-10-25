@@ -59,6 +59,16 @@
 						<span class="focus-input100" data-placeholder="&#xf191;"></span>
 					</div>
 
+					<?php
+					if (isset($_SESSION['error_username'])) {
+						echo "	<div class='text-center p-t-10'>
+									<a class='txt1'>
+										" . $_SESSION['error_username'] . "
+									</a>
+								</div>";
+					}				
+					?>
+
 					<div class="container-login100-form-btn">
 						<button class="login100-form-btn" type="submit">
 							Create

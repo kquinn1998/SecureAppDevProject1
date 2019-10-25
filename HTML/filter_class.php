@@ -11,4 +11,13 @@
         }
         return $string;
     }
+    function checkString($string) {
+        if (stripos($string, '<script>') !== false) {
+            echo "bad";
+            return FALSE;
+        }else{
+            echo "good";
+            return TRUE;
+        }
+    }
 ?>
