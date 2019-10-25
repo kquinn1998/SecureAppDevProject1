@@ -9,7 +9,7 @@
 
     $password = $password . $reg_time . $username;
 
-    $hash = $hash = md5($password); // works, but dangerous
+    $hash = md5($password);
 
 
     $sql = "INSERT INTO users (username, pass, reg_time, active)

@@ -3,6 +3,8 @@
 
     //db connection
     include "con_file.php";
+    //filter class
+    include "filter_class.php";
 
     //if attempts hasnt started init
     if(!isset($_SESSION['attempts'])){
@@ -18,6 +20,9 @@
     //user input credentials;
     $username = $_POST['username'];
     $password = $_POST['pass'];
+
+    //filter username
+    $username = filterString($username);
 
     if ( !isset($username, $password) ) {
         // Could not get the data that should have been sent.
