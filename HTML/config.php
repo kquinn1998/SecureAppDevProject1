@@ -23,7 +23,13 @@
             active BOOLEAN NOT NULL
             )";
         if ($conn->query($sql) === TRUE) {
-
+            $sql = "CREATE TABLE IF NOT EXISTS lockedOutUser (
+                    `IP` VARCHAR( 20 ) NOT NULL PRIMARY KEY,
+                    locked_out_time VARCHAR(30) NOT NULL
+                    )";
+            if ($conn->query($sql) === FALSE) {
+                echo "error creating locked out table";
+            }
         } else {
             echo "Error creating users table: " . $conn->server;
         }
@@ -33,4 +39,5 @@
     
     // closing connection
     $conn->close();
+    
 ?>

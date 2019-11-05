@@ -5,13 +5,24 @@
     include "con_file.php";
     //filter class
     include "filter_class.php";
+    //functions class
+    include "functions.php";
 
     //if attempts hasnt started init
     if(!isset($_SESSION['attempts'])){
         $_SESSION['attempts'] = 0;
+    }else if{
+        
     }else {
         //checking if limit reached
         if($_SESSION['attempts'] >= 5){
+            $IP = get_client_ip();
+            $locked_out_time = time();
+            $sql = "INSERT INTO lockedOutUser (IP,locked_out_time)
+            VALUES ('$IP','$locked_out_time')";
+            if ($conn->query($sql) === FALSE) {
+                echo "error locking out user"
+            }
             $conn->close();
             header("location:Login.html.php");
         }
@@ -61,12 +72,15 @@
         } else {
             //wrong password
             $_SESSION['invalid_username'] = $username;
+            $_SESSION['attempts'] = $_SESSION['attempts'] + 1;
             header("location:Login.html.php");
         }
     } else {
         //wrong username
         $_SESSION['invalid_username'] = $username;
+        $_SESSION['attempts'] = $_SESSION['attempts'] + 1;
         header("location:Login.html.php");
     }
     $stmt->close();
+
 ?>
