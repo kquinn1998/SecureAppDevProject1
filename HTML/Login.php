@@ -22,15 +22,12 @@
     if(!isset($_SESSION['ip'])){
         $_SESSION['ip'] = get_client_ip();
     }
+    if(!isset($_SESSION['ip'])){
+        $_SESSION['bad_login'] = FALSE;
+    }
 
     //filter username
     $username = filterString($username);
-
-    //checking if details are recieved from form
-    if ( !isset($username, $password) ) {
-        $conn->close();
-        echo "no details recieved";
-    }
 
     //check if user is locked out and do not perform login check else do.
     if($_SESSION['locked_out']){
@@ -63,17 +60,22 @@
                     echo "could not access server";
                     $stmt->close();
                 }
-
+                login_event_recorder($_SESSION['ip'], $username, TRUE);
+                echo $username;
                 header("location:WelcomePage.html.php");
             } else {
                 //wrong password
+                login_event_recorder($_SESSION['ip'], $username, 0);
                 $_SESSION['invalid_username'] = $username;
+                $_SESSION['bad_login'] = TRUE;
                 $_SESSION['attempts'] = $_SESSION['attempts'] + 1;
                 header("location:Login.html.php");
             }
         } else {
             //wrong username
+            login_event_recorder($_SESSION['ip'], $username, 0);
             $_SESSION['invalid_username'] = $username;
+            $_SESSION['bad_login'] = TRUE;
             $_SESSION['attempts'] = $_SESSION['attempts'] + 1;
             header("location:Login.html.php");
         }

@@ -22,16 +22,25 @@
             reg_time VARCHAR(30) NOT NULL,
             active BOOLEAN NOT NULL
             )";
-        if ($conn->query($sql) === TRUE) {
-            $sql = "CREATE TABLE IF NOT EXISTS locked_out_users (
-                    `ip` VARCHAR( 20 ) NOT NULL PRIMARY KEY,
-                    locked_out_time VARCHAR(30) NOT NULL
-                    )";
-            if ($conn->query($sql) === FALSE) {
-                echo "error creating locked out table";
-            }
-        } else {
-            echo "Error creating users table: " . $conn->server;
+        if ($conn->query($sql) === FALSE) {
+            echo "error creating users table";
+        }
+        $sql = "CREATE TABLE IF NOT EXISTS locked_out_users (
+                ip VARCHAR( 20 ) NOT NULL PRIMARY KEY,
+                locked_out_time VARCHAR(30) NOT NULL
+                )";
+        if ($conn->query($sql) === FALSE) {
+            echo "error creating locked out table";
+        }
+        $sql = "CREATE TABLE IF NOT EXISTS login_events (
+            id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            ip VARCHAR( 20 ) NOT NULL,
+            username VARCHAR(30) DEFAULT 'empty',
+            successful BOOLEAN NOT NULL,
+            reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+            )";
+        if ($conn->query($sql) === FALSE) {
+            echo "error creating login_events table";
         }
     } else {
         echo "Error creating database: " . $conn->error;

@@ -43,12 +43,24 @@
 
             $duration = $time - $locked_out_time;
             if($duration > 30) {
+                $sql = "DELETE FROM `locked_out_users` WHERE ip = '$ip'";
+                if ($conn->query($sql) === FALSE) {
+                    echo "error deleting locked out user" . $conn->error;
+                }
                 return FALSE;
             }else {
                 return TRUE;
             }
         }else {
             return FALSE;
+        }
+    }
+    function login_event_recorder($ip,$username,$successful){
+        include "con_file.php";
+        $sql = "INSERT INTO login_events (ip, username, successful)
+            VALUES ('$ip','$username','$successful')";
+        if ($conn->query($sql) === FALSE) {
+            echo "error recording login event" . $conn->error;
         }
     }
 ?>

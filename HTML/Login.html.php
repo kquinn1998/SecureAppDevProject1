@@ -10,7 +10,7 @@
 		if ($_SESSION['attempts'] >= 5) {
 			$_SESSION['locked_out'] = TRUE;
 			lockout_user($_SESSION['ip'], time());
-			$_SESSION['invalid_username'] = '';
+			$_SESSION['bad_login'] = FALSE;
 			$_SESSION['attempts'] = 0;
 		}
 	}
@@ -107,8 +107,8 @@
 					?>
 
 					<?php
-					if (isset($_SESSION['invalid_username'])) {
-						if(!$_SESSION['locked_out']){
+					if (isset($_SESSION['bad_login'])) {
+						if($_SESSION['bad_login']){
 							echo "	<div class='text-center p-t-10'>
 										<a class='txt1'>
 											The username " . $_SESSION['invalid_username'] . " or password are invalid.
