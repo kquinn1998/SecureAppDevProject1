@@ -4,7 +4,22 @@
 	session_start();
     if (isset($_SESSION['username'])) {
 		header('location:WelcomePage.html.php');
-    }
+	}
+	//Check attempts and lockout if 5 or above
+	if (isset($_SESSION['attempts'])){
+		if ($_SESSION['attempts'] >= 5) {
+			$_SESSION['locked_out'] = TRUE;
+			lockout_user($_SESSION['ip'], time());
+			$_SESSION['invalid_username'] = '';
+			$_SESSION['attempts'] = 0;
+		}
+	}
+	if(isset($_SESSION['ip'])) {
+		if(!check_if_user_locked_out($_SESSION['ip'])){
+			$_SESSION['locked_out'] = FALSE;
+		}
+	}
+	
 ?>
 
 <!DOCTYPE html>
@@ -67,20 +82,49 @@
 						</label>
 					</div>
 
-					<div class="container-login100-form-btn">
-						<button class="login100-form-btn">
-							Login
-						</button>
-					</div>
+					<?php
+					if (isset($_SESSION['locked_out'])){
+						if ($_SESSION['locked_out'] == TRUE) {
+							echo "	<div class='text-center p-t-10'>
+										<a class='txt1'>
+											You are locked out.
+										</a>
+									</div>";
+						}else {
+							echo "<div class='container-login100-form-btn'>
+									<button class='login100-form-btn'>
+										Login
+									</button>
+								</div>";
+						}
+					}else {
+						echo "<div class='container-login100-form-btn'>
+									<button class='login100-form-btn'>
+										Login
+									</button>
+								</div>";
+					}
+					?>
 
 					<?php
 					if (isset($_SESSION['invalid_username'])) {
-						echo "	<div class='text-center p-t-10'>
-									<a class='txt1'>
-										The username " . $_SESSION['invalid_username'] . " or password are invalid.
-									</a>
-								</div>";
-					}				
+						if(!$_SESSION['locked_out']){
+							echo "	<div class='text-center p-t-10'>
+										<a class='txt1'>
+											The username " . $_SESSION['invalid_username'] . " or password are invalid.
+										</a>
+									</div>";
+						}
+					}	
+					if (isset($_SESSION['attempts'])) {
+						if ($_SESSION['attempts'] > 0) {
+							echo "	<div class='text-center p-t-10'>
+										<a class='txt1'>
+											You have used " . $_SESSION['attempts'] . " of your 5 attempts.
+										</a>
+									</div>";
+						}
+					}	
 					?>
 
                     <div class="text-center p-t-90">

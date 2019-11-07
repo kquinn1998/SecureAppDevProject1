@@ -10,5 +10,4 @@
         $conn->close();
         die("connection error");
     }
-    
 ?>
