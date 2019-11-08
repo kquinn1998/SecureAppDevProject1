@@ -5,6 +5,10 @@
         while(!$check) {
             if (stripos($string, '<script>') !== false) {
                 $string = str_ireplace("<script>","",$string);
+            }else if (stripos($string, '<') !== false) {
+                $string = str_ireplace("<","",$string);
+            }else if (stripos($string, '>') !== false) {
+                $string = str_ireplace(">","",$string);
             }else {
                 $check = TRUE;
             }
