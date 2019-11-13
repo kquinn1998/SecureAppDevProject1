@@ -19,19 +19,19 @@
             $ipaddress = 'UNKNOWN';
         return $ipaddress;
     }
-    function lockout_user($ip, $time) {
+    function lockout_user($ip, $user_agent, $time) {
         include "con_file.php";
-        $sql = "INSERT INTO locked_out_users (ip, locked_out_time)
-            VALUES ('$ip','$time')";
+        $sql = "INSERT INTO locked_out_users (ip, user_agent, locked_out_time)
+            VALUES ('$ip','$user_agent','$time')";
         if ($conn->query($sql) === FALSE) {
             echo "error locking out user" . $conn->error;
         }
     }
-    function check_if_user_locked_out($ip) {
+    function check_if_user_locked_out($ip, $user_agent) {
         include "con_file.php";
-        if ($stmt = $conn->prepare('SELECT locked_out_time FROM locked_out_users WHERE ip = ?')) {
+        if ($stmt = $conn->prepare('SELECT locked_out_time FROM locked_out_users WHERE ip = ? AND user_agent = ?')) {
             // Bind parameters (s = string, i = int, b = blob, etc), in our case the username is a string so we use "s"
-            $stmt->bind_param('s', $ip);
+            $stmt->bind_param('ss', $ip, $user_agent);
             $stmt->execute();
             // Store the result so we can check if the account exists in the database.
             $stmt->store_result();
@@ -43,7 +43,7 @@
 
             $duration = $time - $locked_out_time;
             if($duration > 30) {
-                $sql = "DELETE FROM `locked_out_users` WHERE ip = '$ip'";
+                $sql = "DELETE FROM `locked_out_users` WHERE ip = '$ip' AND user_agent = '$user_agent'";
                 if ($conn->query($sql) === FALSE) {
                     echo "error deleting locked out user" . $conn->error;
                 }
@@ -62,5 +62,46 @@
         if ($conn->query($sql) === FALSE) {
             echo "error recording login event" . $conn->error;
         }
+    }
+    function get_user_agent(){
+        $agent = $_SERVER['HTTP_USER_AGENT']; 
+        $browserArray = array(
+                'Windows Mobile' => 'IEMobile',
+                'Android Mobile' => 'Android',
+                'iPhone Mobile' => 'iPhone',
+                'Firefox' => 'Firefox',
+                'Google Chrome' => 'Chrome',
+                'Internet Explorer' => 'MSIE',
+                'Opera' => 'Opera',
+                'Safari' => 'Safari'
+        ); 
+        foreach ($browserArray as $k => $v) {
+            if (preg_match("/$v/", $agent)) {
+                break;
+            }else {
+                $k = "Browser Unknown";
+            }
+        } 
+        $browser = $k;
+        $osArray = array(
+                'Windows 98' => '(Win98)|(Windows 98)',
+                'Windows 2000' => '(Windows 2000)|(Windows NT 5.0)',
+                'Windows ME' => 'Windows ME',
+                'Windows XP' => '(Windows XP)|(Windows NT 5.1)',
+                'Windows Vista' => 'Windows NT 6.0',
+                'Windows 7' => '(Windows NT 6.1)|(Windows NT 7.0)',
+                'Windows NT 4.0' => '(WinNT)|(Windows NT 4.0)|(WinNT4.0)|(Windows NT)',
+                'Linux' => '(X11)|(Linux)',
+                'Mac OS' => '(Mac_PowerPC)|(Macintosh)|(Mac OS)'
+        ); 
+        foreach ($osArray as $k => $v) {
+            if (preg_match("/$v/", $agent)) {
+                break;
+            }else {
+                $k = "Unknown OS";
+            }
+        } 
+        $os = $k;
+        return $browser . " : " . $os;
     }
 ?>

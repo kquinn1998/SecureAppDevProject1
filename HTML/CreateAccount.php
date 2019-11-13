@@ -13,8 +13,10 @@
         $_SESSION['error_username'] = "Cannot use this username";
         header('location:CreateAccount.html.php');
     }else{
-        //Salting pass
-        $password = $password . $reg_time . $username;
+        //Password Storage Process
+        $salt = md5($reg_time);
+
+        $password = $password . $salt;
 
         $hash = md5($password);
 

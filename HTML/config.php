@@ -26,7 +26,8 @@
             echo "error creating users table";
         }
         $sql = "CREATE TABLE IF NOT EXISTS locked_out_users (
-                ip VARCHAR( 20 ) NOT NULL PRIMARY KEY,
+                ip VARCHAR(20) NOT NULL PRIMARY KEY,
+                user_agent VARCHAR(128) NOT NULL,
                 locked_out_time VARCHAR(30) NOT NULL
                 )";
         if ($conn->query($sql) === FALSE) {

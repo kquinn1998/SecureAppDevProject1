@@ -22,6 +22,9 @@
     if(!isset($_SESSION['ip'])){
         $_SESSION['ip'] = get_client_ip();
     }
+    if(!isset($_SESSION['user_agent'])){
+        $_SESSION['user_agent'] = get_user_agent();
+    }
     if(!isset($_SESSION['ip'])){
         $_SESSION['bad_login'] = FALSE;
     }
@@ -45,7 +48,8 @@
             $stmt->fetch();
 
             //ready for decrypt from hashed salt
-            $hash = $password . $reg_time . $username;
+            $reg_time = md5($reg_time);
+            $hash = $password . $reg_time;
 
             //password check
             if (md5($hash) == $hashedpassword) {

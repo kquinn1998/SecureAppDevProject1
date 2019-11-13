@@ -9,13 +9,13 @@
 	if (isset($_SESSION['attempts'])){
 		if ($_SESSION['attempts'] >= 5) {
 			$_SESSION['locked_out'] = TRUE;
-			lockout_user($_SESSION['ip'], time());
+			lockout_user($_SESSION['ip'], $_SESSION['user_agent'], time());
 			$_SESSION['bad_login'] = FALSE;
 			$_SESSION['attempts'] = 0;
 		}
 	}
 	if(isset($_SESSION['ip'])) {
-		if(!check_if_user_locked_out($_SESSION['ip'])){
+		if(!check_if_user_locked_out($_SESSION['ip'], $_SESSION['user_agent'])){
 			$_SESSION['locked_out'] = FALSE;
 		}
 	}
@@ -147,19 +147,8 @@
 	<div id="dropDownSelect1"></div>
 	
 <!--===============================================================================================-->
-	<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
-<!--===============================================================================================-->
-	<script src="vendor/animsition/js/animsition.min.js"></script>
-<!--===============================================================================================-->
 	<script src="vendor/bootstrap/js/popper.js"></script>
 	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-<!--===============================================================================================-->
-	<script src="vendor/select2/select2.min.js"></script>
-<!--===============================================================================================-->
-	<script src="vendor/daterangepicker/moment.min.js"></script>
-	<script src="vendor/daterangepicker/daterangepicker.js"></script>
-<!--===============================================================================================-->
-	<script src="vendor/countdowntime/countdowntime.js"></script>
 <!--===============================================================================================-->
 	<script src="../JS/main.js"></script>
 
