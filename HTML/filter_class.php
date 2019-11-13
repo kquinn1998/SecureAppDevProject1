@@ -3,12 +3,10 @@
         $check = FALSE;
 
         while(!$check) {
-            if (stripos($string, '<script>') !== false) {
-                $string = str_ireplace("<script>","",$string);
-            }else if (stripos($string, '<') !== false) {
-                $string = str_ireplace("<","",$string);
+            if (stripos($string, '<') !== false) {
+                $string = str_ireplace("<","&lt",$string);
             }else if (stripos($string, '>') !== false) {
-                $string = str_ireplace(">","",$string);
+                $string = str_ireplace(">","&gt",$string);
             }else {
                 $check = TRUE;
             }
