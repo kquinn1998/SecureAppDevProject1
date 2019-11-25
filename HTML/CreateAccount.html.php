@@ -66,10 +66,17 @@
 										" . $_SESSION['error_username'] . "
 									</a>
 								</div>";
-					}				
+					}		
+					if (isset($_SESSION['error_password'])) {
+						echo "	<div class='text-center p-t-10'>
+									<a class='txt1'>
+										" . $_SESSION['error_password'] . "
+									</a>
+								</div>";
+					}			
 					?>
 
-					<div class="container-login100-form-btn">
+					<div class="container-login100-form-btn p-t-20">
 						<button class="login100-form-btn" type="submit">
 							Create
 						</button>

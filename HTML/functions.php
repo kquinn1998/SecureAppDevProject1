@@ -104,4 +104,36 @@
         $os = $k;
         return $browser . " : " . $os;
     }
+    function check_password_strength($password) {
+        if( strlen($password) < 8 ) {
+            $error .= "Password must be minimum 8 charachters in length.<br>";
+        } 
+            
+        if( strlen($password) > 32 ) {
+            $error .= "Password must be maximum 32 charachters in length.<br>";
+        }
+            
+        if( !preg_match("#[0-9]+#", $password) ) {
+            $error .= "Password must include at least one number.<br>";
+        }
+            
+        if( !preg_match("#[a-z]+#", $password) ) {
+            $error .= "Password must include at least one lowercase letter.<br>";
+        }
+            
+        if( !preg_match("#[A-Z]+#", $password) ) {
+            $error .= "Password must include at least one uppercase letter.<br>";
+        }
+            
+        if( !preg_match("#\W+#", $password) ) {
+            $error .= "Password must include at least one symbol.<br>";
+        }
+            
+        if($error){
+            return $error;
+        } 
+        else {
+            return 1;
+        }
+    }
 ?>

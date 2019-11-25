@@ -4,10 +4,21 @@
     //connection made
     include 'con_file.php';
     include 'filter_class.php';
+    include 'functions.php';
 
     $username = $_POST['username'];
     $password = $_POST['pass'];
     $reg_time = time();
+
+    //password check
+    $result = check_password_strength($password);
+    if($result == 1) {
+        unset($_SESSION['error_password']);
+    }else {
+        $_SESSION['error_password'] = $result;
+        header('location:CreateAccount.html.php');
+        die();
+    }
 
     if(!checkString($username)) {
         $_SESSION['error_username'] = "Cannot use this username";
