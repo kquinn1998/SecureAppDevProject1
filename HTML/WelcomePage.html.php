@@ -4,7 +4,23 @@
 		session_destroy();
         header('location:Login.html.php');
         exit();
-    }
+	}
+	if(!isset($_SESSION['last_active_time'])) {
+		$_SESSION['last_active_time'] = time();
+		$_SESSION['loggedin_time'] = time();
+	}else{
+		$loggedin_time = time() - $_SESSION['last_active_time'];
+		if($loggedin_time > 600) {
+			header('location:Logout.php');
+		}else{
+			$_SESSION['last_active_time'] = time();
+		}
+		
+		$loggedin_time = time() - $_SESSION['loggedin_time'];
+		if($loggedin_time > 3600) {
+			header('location:Logout.php');
+		}
+	}
 ?>
 
 <!DOCTYPE html>
