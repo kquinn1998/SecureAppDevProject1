@@ -57,7 +57,7 @@
 	<div class="limiter">
 		<div class="container-login100" style="background-image: url('images/bg-01.jpg');">
 			<div class="wrap-login100">
-				<form class="login100-form validate-form" action="ChangePassword.php" method="POST">
+				<form class="login100-form validate-form" action="ChangePassword.php" method="GET">
 					<span class="login100-form-logo">
 						<i class="zmdi zmdi-landscape"></i>
 					</span>
@@ -81,7 +81,7 @@
 						<span class="focus-input100" data-placeholder="&#xf191;"></span>
 					</div>
 
-					<input type="hidden" name="token" value="<?php echo $_SESSION['CSRF_token']; ?>"/>
+					<input type="hidden" name="token" value="<?php echo $_SESSION['CSRF_token'];?>"/>
 
 					<?php	
 					if (isset($_SESSION['error_password'])) {

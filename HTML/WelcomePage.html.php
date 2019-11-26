@@ -67,7 +67,7 @@
 					</span>
 
 					<span class="login100-form-title p-b-34 p-t-27">
-						Welcome !
+						Welcome <?php echo $_SESSION['username']; ?>!
 					</span>
 
 					<div class="text-center p-t-45">

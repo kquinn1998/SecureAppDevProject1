@@ -6,10 +6,11 @@
     include 'filter_class.php';
     include 'functions.php';
 
-    $old_password = $_POST['old_password'];
-    $new_password = $_POST['new_password'];
-    $confirm_password = $_POST['confirm_password'];
-    $form_token = $_POST['token'];
+    //using get as we are asked to in doc even though this is unsecure
+    $old_password = $_GET['old_password'];
+    $new_password = $_GET['new_password'];
+    $confirm_password = $_GET['confirm_password'];
+    $form_token = $_GET['token'];
     $username = $_SESSION['username'];
 
     //CSRF Check
