@@ -20,10 +20,25 @@
             pass VARCHAR(128) NOT NULL,
             reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             reg_time VARCHAR(30) NOT NULL,
-            active BOOLEAN NOT NULL
+            active BOOLEAN NOT NULL,
+            priv BOOLEAN NOT NULL
             )";
         if ($conn->query($sql) === FALSE) {
             echo "error creating users table";
+        } else {
+            $sql = "SELECT id FROM users WHERE username = 'ADMIN'";
+            $result = $conn->query($sql);
+            $count = mysqli_num_rows($result);
+            if(!$count) {
+                $reg_time = time();
+                $hash = md5('SAD_2019!' . md5($reg_time));
+
+                $sql = "INSERT INTO users (username, pass, reg_time, active, priv)
+                VALUES ('ADMIN','$hash','$reg_time', 'FALSE', 1)";
+                if ($conn->query($sql) === FALSE) {
+                    die("error creating admin user" . $conn->error);
+                }
+            }
         }
         $sql = "CREATE TABLE IF NOT EXISTS locked_out_users (
                 ip VARCHAR(20) NOT NULL PRIMARY KEY,

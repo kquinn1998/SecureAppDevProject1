@@ -36,7 +36,7 @@
     if($_SESSION['locked_out']){
         header("location:Login.html.php");
     }else {
-        if ($stmt = $conn->prepare('SELECT id, pass, reg_time FROM users WHERE username = ?')) {
+        if ($stmt = $conn->prepare('SELECT id, pass, reg_time, priv FROM users WHERE username = ?')) {
             // Bind parameters (s = string, i = int, b = blob, etc), in our case the username is a string so we use "s"
             $stmt->bind_param('s', $username);
             $stmt->execute();
@@ -44,7 +44,7 @@
             $stmt->store_result();
         }
         if ($stmt->num_rows > 0) {
-            $stmt->bind_result($id, $hashedpassword, $reg_time);
+            $stmt->bind_result($id, $hashedpassword, $reg_time, $admin);
             $stmt->fetch();
 
             //ready for decrypt from hashed salt
@@ -58,6 +58,7 @@
                 $_SESSION['loggedin'] = TRUE;
                 $_SESSION['username'] = $username;
                 $_SESSION['id'] = $id;
+                $_SESSION['admin'] = $admin;
                 
                 $sql = "UPDATE users SET active = TRUE WHERE username = '$username'";
                 if ($conn->query($sql) === FALSE) {

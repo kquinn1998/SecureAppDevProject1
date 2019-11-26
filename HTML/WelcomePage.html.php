@@ -76,6 +76,16 @@
 						</a>
 					</div>
 
+					<?php	
+					if ($_SESSION['admin']) {
+						echo "	<div class='text-center p-t-10'>
+									<a class='txt1'>
+										You have admin priv.
+									</a>
+								</div>";
+					}			
+					?>
+
 					<div class="container-login100-form-btn p-b-34 p-t-45">
 						<button class="login100-form-btn">
 							Logout
