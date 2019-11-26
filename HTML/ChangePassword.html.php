@@ -1,31 +1,32 @@
 <?php
-	include 'config.php';
-	include 'functions.php';
 	session_start();
-    if (isset($_SESSION['username'])) {
-		header('location:WelcomePage.html.php');
+    if (!isset($_SESSION['loggedin'])) {
+		session_destroy();
+        header('location:Login.html.php');
+        exit();
 	}
-	//Check attempts and lockout if 5 or above
-	if (isset($_SESSION['attempts'])){
-		if ($_SESSION['attempts'] >= 5) {
-			$_SESSION['locked_out'] = TRUE;
-			lockout_user($_SESSION['ip'], $_SESSION['user_agent'], time());
-			$_SESSION['bad_login'] = FALSE;
-			$_SESSION['attempts'] = 0;
+	if(!isset($_SESSION['last_active_time'])) {
+		$_SESSION['last_active_time'] = time();
+		$_SESSION['loggedin_time'] = time();
+	}else{
+		$loggedin_time = time() - $_SESSION['last_active_time'];
+		if($loggedin_time > 600) {
+			header('location:Logout.php');
+		}else{
+			$_SESSION['last_active_time'] = time();
+		}
+		
+		$loggedin_time = time() - $_SESSION['loggedin_time'];
+		if($loggedin_time > 3600) {
+			header('location:Logout.php');
 		}
 	}
-	if(isset($_SESSION['ip'])) {
-		if(!check_if_user_locked_out($_SESSION['ip'], $_SESSION['user_agent'])){
-			$_SESSION['locked_out'] = FALSE;
-		}
-	}
-	
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>Login</title>
+	<title>Change Password</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 <!--===============================================================================================-->	
@@ -56,83 +57,47 @@
 	<div class="limiter">
 		<div class="container-login100" style="background-image: url('images/bg-01.jpg');">
 			<div class="wrap-login100">
-				<form class="login100-form validate-form" action="Login.php" method="POST">
+				<form class="login100-form validate-form" action="ChangePassword.php" method="POST">
 					<span class="login100-form-logo">
 						<i class="zmdi zmdi-landscape"></i>
 					</span>
 
 					<span class="login100-form-title p-b-34 p-t-27">
-						Log in
+						Change Password
 					</span>
 
-					<div class="wrap-input100 validate-input" data-validate = "Enter username">
-						<input class="input100" type="text" name="username" placeholder="Username">
-						<span class="focus-input100" data-placeholder="&#xf207;"></span>
-					</div>
-
-					<div class="wrap-input100 validate-input" data-validate="Enter password">
-						<input class="input100" type="password" name="pass" placeholder="Password">
+					<div class="wrap-input100 validate-input" data-validate="Enter old password">
+						<input class="input100" type="password" name="old_password" placeholder="Old Password">
 						<span class="focus-input100" data-placeholder="&#xf191;"></span>
 					</div>
 
-					<div class="contact100-form-checkbox">
-						<input class="input-checkbox100" id="ckb1" type="checkbox" name="remember-me">
-						<label class="label-checkbox100" for="ckb1">
-							Remember me
-						</label>
+					<div class="wrap-input100 validate-input" data-validate="Enter old password">
+						<input class="input100" type="password" name="new_password" placeholder="New Password">
+						<span class="focus-input100" data-placeholder="&#xf191;"></span>
 					</div>
 
-					<?php
-					if (isset($_SESSION['locked_out'])){
-						if ($_SESSION['locked_out'] == TRUE) {
-							echo "	<div class='text-center p-t-10'>
-										<a class='txt1'>
-											You are locked out.
-										</a>
-									</div>";
-						}else {
-							echo "<div class='container-login100-form-btn'>
-									<button class='login100-form-btn'>
-										Login
-									</button>
-								</div>";
-						}
-					}else {
-						echo "<div class='container-login100-form-btn'>
-									<button class='login100-form-btn'>
-										Login
-									</button>
-								</div>";
-					}
-					?>
-
-					<?php
-					if (isset($_SESSION['bad_login'])) {
-						if($_SESSION['bad_login']){
-							echo "	<div class='text-center p-t-10'>
-										<a class='txt1'>
-											The username " . $_SESSION['invalid_username'] . " or password are invalid.
-										</a>
-									</div>";
-						}
-					}	
-					if (isset($_SESSION['attempts'])) {
-						if ($_SESSION['attempts'] > 0) {
-							echo "	<div class='text-center p-t-10'>
-										<a class='txt1'>
-											You have used " . $_SESSION['attempts'] . " of your 5 attempts.
-										</a>
-									</div>";
-						}
-					}	
-					?>
-
-                    <div class="text-center p-t-90">
-						<a class="txt1 font-weight-bolder " href="CreateAccount.html.php">
-							Create Account
-						</a>
+					<div class="wrap-input100 validate-input" data-validate="Confirm new password">
+						<input class="input100" type="password" name="confirm_password" placeholder="Confirm Password">
+						<span class="focus-input100" data-placeholder="&#xf191;"></span>
 					</div>
 
+					<input type="hidden" name="token" value="<?php echo $_SESSION['CSRF_token']; ?>"/>
+
+					<?php	
+					if (isset($_SESSION['error_password'])) {
+						echo "	<div class='text-center p-t-10'>
+									<a class='txt1'>
+										" . $_SESSION['error_password'] . "
+									</a>
+								</div>";
+					}			
+					?>
+
+					<div class="container-login100-form-btn p-t-20">
+						<button class="login100-form-btn" type="submit">
+							Change
+						</button>
+					</div>
 				</form>
 			</div>
 		</div>

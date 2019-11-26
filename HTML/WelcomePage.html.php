@@ -21,6 +21,10 @@
 			header('location:Logout.php');
 		}
 	}
+
+	if(!isset($_SESSION['CSRF_token'])){
+		$_SESSION['CSRF_token'] = bin2hex(random_bytes(32));
+	}
 ?>
 
 <!DOCTYPE html>
@@ -66,7 +70,13 @@
 						Welcome !
 					</span>
 
-					<div class="container-login100-form-btn">
+					<div class="text-center p-t-45">
+						<a class="txt1 font-weight-bolder " href="ChangePassword.html.php">
+							Change Password
+						</a>
+					</div>
+
+					<div class="container-login100-form-btn p-b-34 p-t-45">
 						<button class="login100-form-btn">
 							Logout
 						</button>

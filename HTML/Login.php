@@ -25,7 +25,7 @@
     if(!isset($_SESSION['user_agent'])){
         $_SESSION['user_agent'] = get_user_agent();
     }
-    if(!isset($_SESSION['ip'])){
+    if(!isset($_SESSION['bad_login'])){
         $_SESSION['bad_login'] = FALSE;
     }
 
