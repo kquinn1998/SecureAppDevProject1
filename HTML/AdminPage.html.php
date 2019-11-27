@@ -73,7 +73,7 @@
 					<span class="login100-form-title p-b-34 p-t-27">
 						Admin Page!
 					</span>
-
+					<h1 class="display-4 text-white text-center">Login Event Log</h1>
                     <?php
                         include "con_file.php";
                         $sql = "SELECT ip, username, successful, reg_date FROM login_events"; //You don't need a ; like you do in SQL
@@ -87,7 +87,20 @@
                         
                         echo "</table></center>";
                     ?>
-
+					<h1 class="display-4 text-white text-center p-t-30">Locked Out Users</h1>
+					<?php
+                        include "con_file.php";
+                        $sql = "SELECT ip, user_agent FROM locked_out_users";
+                        $result = $conn->query($sql);
+                        
+                        echo "<center><table class='txt1'>"; // start a table tag in the HTML
+						echo "<tr><td class='p-r-20'>IP</td><td class='p-r-20'>User Agent</td></tr>";
+                        while($row = mysqli_fetch_array($result)){   //Creates a loop to loop through results
+                        echo "<tr><td class='p-r-20'>" . $row['ip'] . "</td><td class='p-r-20'>" . $row['user_agent'] . "</td></tr>";  //$row['index'] the index here is a field name
+                        }
+                        
+                        echo "</table></center>";
+                    ?>
 					<div class="container-login100-form-btn p-b-34 p-t-45">
 						<button class="login100-form-btn">
 							Back
