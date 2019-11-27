@@ -5,6 +5,14 @@
     if (isset($_SESSION['username'])) {
 		header('location:WelcomePage.html.php');
 	}
+
+	if(!isset($_SESSION['ip'])){
+        $_SESSION['ip'] = get_client_ip();
+    }
+    if(!isset($_SESSION['user_agent'])){
+        $_SESSION['user_agent'] = get_user_agent();
+    }
+
 	//Check attempts and lockout if 5 or above
 	if (isset($_SESSION['attempts'])){
 		if ($_SESSION['attempts'] >= 5) {
@@ -14,6 +22,7 @@
 			$_SESSION['attempts'] = 0;
 		}
 	}
+	$_SESSION['attempts'] = check_attempts($_SESSION['ip'],$_SESSION['user_agent']);
 	if(isset($_SESSION['ip'])) {
 		if(!check_if_user_locked_out($_SESSION['ip'], $_SESSION['user_agent'])){
 			$_SESSION['locked_out'] = FALSE;

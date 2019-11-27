@@ -48,6 +48,14 @@
         if ($conn->query($sql) === FALSE) {
             echo "error creating locked out table";
         }
+        $sql = "CREATE TABLE IF NOT EXISTS attempts (
+            ip VARCHAR(20) NOT NULL PRIMARY KEY,
+            user_agent VARCHAR(128) NOT NULL,
+            attempts INT(10) NOT NULL
+            )";
+        if ($conn->query($sql) === FALSE) {
+            echo "error creating attempts table";
+        }
         $sql = "CREATE TABLE IF NOT EXISTS login_events (
             id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
             ip VARCHAR( 20 ) NOT NULL,

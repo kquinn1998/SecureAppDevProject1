@@ -26,6 +26,52 @@
         if ($conn->query($sql) === FALSE) {
             echo "error locking out user" . $conn->error;
         }
+        clear_attempts($ip,$user_agent);
+    }
+    function add_attempt($ip, $user_agent) {
+        include "con_file.php";
+        //check if attempts in db
+        $sql = "SELECT id FROM attempts WHERE ip = '$ip' AND user_agent = '$user_agent'";
+        $result = $conn->query($sql);
+        $count = mysqli_num_rows($result);
+        if(!count) {
+            //init attempts
+            $sql = "INSERT INTO attempts (ip, user_agent, attempts)
+            VALUES ('$ip','$user_agent',1)";
+            if ($conn->query($sql) === FALSE) {
+                echo "error locking out user" . $conn->error;
+            }
+        }else{
+            $sql = "UPDATE attempts SET attempts = attempts + 1 WHERE ip = '$ip' AND user_agent = '$user_agent'";
+            if ($conn->query($sql) === FALSE) {
+                echo "error locking out user" . $conn->error;
+            }
+        }
+    }
+    function check_attempts($ip,$user_agent){
+        include "con_file.php";
+        $sql = "SELECT attempts FROM attempts WHERE ip = '$ip' AND user_agent = '$user_agent'";
+        $result = $conn->query($sql);
+        $count = mysqli_num_rows($result);
+        if(!$count) {
+            //init attempts
+            $sql = "INSERT INTO attempts (ip, user_agent, attempts)
+            VALUES ('$ip','$user_agent',0)";
+            if ($conn->query($sql) === FALSE) {
+                echo "error locking out user" . $conn->error;
+            }
+            return 0;
+        }else {
+            $row = mysqli_fetch_array($result);
+            return $row['attempts'];
+        }
+    }
+    function clear_attempts($ip,$user_agent){
+        include "con_file.php";
+        $sql = "UPDATE attempts SET attempts = 0 WHERE ip = '$ip' AND user_agent = '$user_agent'";
+            if ($conn->query($sql) === FALSE) {
+                echo "error locking out user" . $conn->error;
+            }
     }
     function check_if_user_locked_out($ip, $user_agent) {
         include "con_file.php";
@@ -42,7 +88,7 @@
             $stmt->fetch();
 
             $duration = $time - $locked_out_time;
-            if($duration > 30) {
+            if($duration > 180) {
                 $sql = "DELETE FROM `locked_out_users` WHERE ip = '$ip' AND user_agent = '$user_agent'";
                 if ($conn->query($sql) === FALSE) {
                     echo "error deleting locked out user" . $conn->error;

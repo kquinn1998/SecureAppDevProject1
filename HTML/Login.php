@@ -16,14 +16,14 @@
     if(!isset($_SESSION['locked_out'])){
         $_SESSION['locked_out'] = FALSE;
     }
-    if(!isset($_SESSION['attempts'])){
-        $_SESSION['attempts'] = 0;
-    }
     if(!isset($_SESSION['ip'])){
         $_SESSION['ip'] = get_client_ip();
     }
     if(!isset($_SESSION['user_agent'])){
         $_SESSION['user_agent'] = get_user_agent();
+    }
+    if(!isset($_SESSION['attempts'])){
+        $_SESSION['attempts'] = check_attempts($_SESSION['ip'],$_SESSION['user_agent']);
     }
     if(!isset($_SESSION['bad_login'])){
         $_SESSION['bad_login'] = FALSE;
@@ -31,6 +31,13 @@
 
     //filter username
     $username = filterString($username);
+
+    if(!check_if_user_locked_out($_SESSION['ip'], $_SESSION['user_agent'])){
+        $_SESSION['locked_out'] = FALSE;
+    }else{
+        $_SESSION['locked_out'] = TRUE;
+        header("location:Login.html.php");
+    }
 
     //check if user is locked out and do not perform login check else do.
     if($_SESSION['locked_out']){
@@ -65,15 +72,16 @@
                     echo "could not access server";
                     $stmt->close();
                 }
+                clear_attempts($_SESSION['ip'],$_SESSION['user_agent']);
                 login_event_recorder($_SESSION['ip'], $username, TRUE);
-                echo $username;
                 header("location:WelcomePage.html.php");
             } else {
                 //wrong password
                 login_event_recorder($_SESSION['ip'], $username, 0);
                 $_SESSION['invalid_username'] = $username;
                 $_SESSION['bad_login'] = TRUE;
-                $_SESSION['attempts'] = $_SESSION['attempts'] + 1;
+                add_attempt($_SESSION['ip'],$_SESSION['user_agent']);
+                $_SESSION['attempts'] = check_attempts($_SESSION['ip'],$_SESSION['user_agent']);
                 header("location:Login.html.php");
             }
         } else {
@@ -81,7 +89,8 @@
             login_event_recorder($_SESSION['ip'], $username, 0);
             $_SESSION['invalid_username'] = $username;
             $_SESSION['bad_login'] = TRUE;
-            $_SESSION['attempts'] = $_SESSION['attempts'] + 1;
+            add_attempt($_SESSION['ip'],$_SESSION['user_agent']);
+            $_SESSION['attempts'] = check_attempts($_SESSION['ip'],$_SESSION['user_agent']);
             header("location:Login.html.php");
         }
         $stmt->close();
