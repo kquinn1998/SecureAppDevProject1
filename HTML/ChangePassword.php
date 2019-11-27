@@ -16,7 +16,7 @@
     //CSRF Check
     if(!hash_equals($_SESSION['CSRF_token'], $form_token)){
         $_SESSION['error_password'] = "CSRF token did not verify try login and try again.<br>";
-        header("location:ChangePassword.html.php");
+        header("location:Logout.php");
         die();
     }
 
