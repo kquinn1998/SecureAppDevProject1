@@ -20,17 +20,21 @@
 		if($loggedin_time > 3600) {
 			header('location:Logout.php');
 		}
-	}
+    }
 
-	if(!isset($_SESSION['CSRF_token'])){
-		$_SESSION['CSRF_token'] = bin2hex(random_bytes(32));
-	}
+    if(isset($_SESSION['admin'])){
+        if(!$_SESSION['admin']){
+            header('location:WelcomePage.html.php');
+        }
+    }else{
+        header('location:WelcomePage.html.php');
+    }
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>Welcome</title>
+	<title>Admin Page</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 <!--===============================================================================================-->	
@@ -61,34 +65,32 @@
 	<div class="limiter">
 		<div class="container-login100" style="background-image: url('images/bg-01.jpg');">
 			<div class="wrap-login100">
-				<form class="login100-form validate-form" action="Logout.php" method="POST">
+				<form class="login100-form validate-form" action="WelcomePage.html.php">
 					<span class="login100-form-logo">
 						<i class="zmdi zmdi-landscape"></i>
 					</span>
 
 					<span class="login100-form-title p-b-34 p-t-27">
-						Welcome <?php echo $_SESSION['username']; ?>!
+						Admin Page!
 					</span>
 
-					<div class="text-center p-t-45">
-						<a class="txt1 font-weight-bolder " href="ChangePassword.html.php">
-							Change Password
-						</a>
-					</div>
-
-					<?php	
-					if ($_SESSION['admin']) {
-						echo "	<div class='text-center p-t-10'>
-									<a class='txt1' href='AdminPage.html.php'>
-										Admin Page
-									</a>
-								</div>";
-					}			
-					?>
+                    <?php
+                        include "con_file.php";
+                        $sql = "SELECT ip, username, successful, reg_date FROM login_events"; //You don't need a ; like you do in SQL
+                        $result = $conn->query($sql);
+                        
+                        echo "<center><table class='txt1'>"; // start a table tag in the HTML
+                        echo "<tr><td class='p-r-20'>IP</td><td class='p-r-20'>Username</td><td class='p-r-20'>Successful</td><td class='p-r-20'>Timestamp</td></tr>";
+                        while($row = mysqli_fetch_array($result)){   //Creates a loop to loop through results
+                        echo "<tr><td class='p-r-20'>" . $row['ip'] . "</td><td class='p-r-20'>" . $row['username'] . "</td><td class='p-r-20'>" . $row['successful'] . "</td><td class='p-r-20'>" . $row['reg_date'] . "</td></tr>";  //$row['index'] the index here is a field name
+                        }
+                        
+                        echo "</table></center>";
+                    ?>
 
 					<div class="container-login100-form-btn p-b-34 p-t-45">
 						<button class="login100-form-btn">
-							Logout
+							Back
 						</button>
 					</div>
 					</div>
