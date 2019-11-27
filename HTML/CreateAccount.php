@@ -22,8 +22,17 @@
 
     if(!checkString($username)) {
         $_SESSION['error_username'] = "Cannot use this username";
-        header('location:CreateAccount.html.php');
+        header('location:CreateAccount.html.php');    
     }else{
+        //Checking if username exists
+        $sql = "SELECT id FROM users WHERE username = '$username'";
+        $result = $conn->query($sql);
+        $count = mysqli_num_rows($result);
+        if($count > 0) {
+            $_SESSION['error_username'] = "Cannot use this username";
+            header('location:CreateAccount.html.php');
+            die();
+        }
         //Password Storage Process
         $salt = md5($reg_time);
 
