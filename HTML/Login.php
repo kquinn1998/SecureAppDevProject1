@@ -73,11 +73,12 @@
                     $stmt->close();
                 }
                 clear_attempts($_SESSION['ip'],$_SESSION['user_agent']);
-                login_event_recorder($_SESSION['ip'], $username, TRUE);
+                clear_attempts_create_account($_SESSION['ip'],$_SESSION['user_agent']);
+                login_event_recorder($_SESSION['ip'], $_SESSION['user_agent'], $username, TRUE);
                 header("location:WelcomePage.html.php");
             } else {
                 //wrong password
-                login_event_recorder($_SESSION['ip'], $username, 0);
+                login_event_recorder($_SESSION['ip'], $_SESSION['user_agent'], $username, 0);
                 $_SESSION['invalid_username'] = $username;
                 $_SESSION['bad_login'] = TRUE;
                 add_attempt($_SESSION['ip'],$_SESSION['user_agent']);
@@ -86,7 +87,7 @@
             }
         } else {
             //wrong username
-            login_event_recorder($_SESSION['ip'], $username, 0);
+            login_event_recorder($_SESSION['ip'], $_SESSION['user_agent'], $username, 0);
             $_SESSION['invalid_username'] = $username;
             $_SESSION['bad_login'] = TRUE;
             add_attempt($_SESSION['ip'],$_SESSION['user_agent']);

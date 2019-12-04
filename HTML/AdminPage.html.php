@@ -76,13 +76,13 @@
 					<h1 class="display-4 text-white text-center">Login Event Log</h1>
                     <?php
                         include "con_file.php";
-                        $sql = "SELECT ip, username, successful, reg_date FROM login_events"; //You don't need a ; like you do in SQL
+                        $sql = "SELECT ip, user_agent, username, successful, reg_date FROM login_events"; //You don't need a ; like you do in SQL
                         $result = $conn->query($sql);
                         
                         echo "<center><table class='txt1'>"; // start a table tag in the HTML
-                        echo "<tr><td class='p-r-20'>IP</td><td class='p-r-20'>Username</td><td class='p-r-20'>Successful</td><td class='p-r-20'>Timestamp</td></tr>";
+                        echo "<tr><td class='p-r-20'>IP</td><td class='p-r-20'>User Agent</td><td class='p-r-20'>Username</td><td class='p-r-20'>Successful</td><td class='p-r-20'>Timestamp</td></tr>";
                         while($row = mysqli_fetch_array($result)){   //Creates a loop to loop through results
-                        echo "<tr><td class='p-r-20'>" . $row['ip'] . "</td><td class='p-r-20'>" . $row['username'] . "</td><td class='p-r-20'>" . $row['successful'] . "</td><td class='p-r-20'>" . $row['reg_date'] . "</td></tr>";  //$row['index'] the index here is a field name
+                        echo "<tr><td class='p-r-20'>" . $row['ip'] . "</td><td class='p-r-20'>" . $row['user_agent'] . "</td><td class='p-r-20'>" . $row['username'] . "</td><td class='p-r-20'>" . $row['successful'] . "</td><td class='p-r-20'>" . $row['reg_date'] . "</td></tr>";  //$row['index'] the index here is a field name
                         }
                         
                         echo "</table></center>";

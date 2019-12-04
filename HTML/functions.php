@@ -28,6 +28,15 @@
         }
         clear_attempts($ip,$user_agent);
     }
+    function lockout_user_create_account($ip, $user_agent, $time) {
+        include "con_file.php";
+        $sql = "INSERT INTO locked_out_users_create_account (ip, user_agent, locked_out_time)
+            VALUES ('$ip','$user_agent','$time')";
+        if ($conn->query($sql) === FALSE) {
+            echo "error locking out user" . $conn->error;
+        }
+        clear_attempts($ip,$user_agent);
+    }
     function add_attempt($ip, $user_agent) {
         include "con_file.php";
         //check if attempts in db
@@ -43,6 +52,26 @@
             }
         }else{
             $sql = "UPDATE attempts SET attempts = attempts + 1 WHERE ip = '$ip' AND user_agent = '$user_agent'";
+            if ($conn->query($sql) === FALSE) {
+                echo "error locking out user" . $conn->error;
+            }
+        }
+    }
+    function add_attempt_create_account($ip, $user_agent) {
+        include "con_file.php";
+        //check if attempts in db
+        $sql = "SELECT id FROM attempts_create_account WHERE ip = '$ip' AND user_agent = '$user_agent'";
+        $result = $conn->query($sql);
+        $count = mysqli_num_rows($result);
+        if(!count) {
+            //init attempts
+            $sql = "INSERT INTO attempts_create_account (ip, user_agent, attempts)
+            VALUES ('$ip','$user_agent',1)";
+            if ($conn->query($sql) === FALSE) {
+                echo "error locking out user" . $conn->error;
+            }
+        }else{
+            $sql = "UPDATE attempts_create_account SET attempts = attempts + 1 WHERE ip = '$ip' AND user_agent = '$user_agent'";
             if ($conn->query($sql) === FALSE) {
                 echo "error locking out user" . $conn->error;
             }
@@ -66,9 +95,34 @@
             return $row['attempts'];
         }
     }
+    function check_attempts_create_account($ip,$user_agent){
+        include "con_file.php";
+        $sql = "SELECT attempts FROM attempts_create_account WHERE ip = '$ip' AND user_agent = '$user_agent'";
+        $result = $conn->query($sql);
+        $count = mysqli_num_rows($result);
+        if(!$count) {
+            //init attempts
+            $sql = "INSERT INTO attempts_create_account (ip, user_agent, attempts)
+            VALUES ('$ip','$user_agent',0)";
+            if ($conn->query($sql) === FALSE) {
+                echo "error locking out user" . $conn->error;
+            }
+            return 0;
+        }else {
+            $row = mysqli_fetch_array($result);
+            return $row['attempts'];
+        }
+    }
     function clear_attempts($ip,$user_agent){
         include "con_file.php";
         $sql = "UPDATE attempts SET attempts = 0 WHERE ip = '$ip' AND user_agent = '$user_agent'";
+            if ($conn->query($sql) === FALSE) {
+                echo "error locking out user" . $conn->error;
+            }
+    }
+    function clear_attempts_create_account($ip,$user_agent){
+        include "con_file.php";
+        $sql = "UPDATE attempts_create_account SET attempts = 0 WHERE ip = '$ip' AND user_agent = '$user_agent'";
             if ($conn->query($sql) === FALSE) {
                 echo "error locking out user" . $conn->error;
             }
@@ -101,10 +155,38 @@
             return FALSE;
         }
     }
-    function login_event_recorder($ip,$username,$successful){
+    function check_if_user_locked_out_create_account($ip, $user_agent) {
         include "con_file.php";
-        $sql = "INSERT INTO login_events (ip, username, successful)
-            VALUES ('$ip','$username','$successful')";
+        if ($stmt = $conn->prepare('SELECT locked_out_time FROM locked_out_users_create_account WHERE ip = ? AND user_agent = ?')) {
+            // Bind parameters (s = string, i = int, b = blob, etc), in our case the username is a string so we use "s"
+            $stmt->bind_param('ss', $ip, $user_agent);
+            $stmt->execute();
+            // Store the result so we can check if the account exists in the database.
+            $stmt->store_result();
+        }
+        if ($stmt->num_rows > 0) {
+            $time = time();
+            $stmt->bind_result($locked_out_time);
+            $stmt->fetch();
+
+            $duration = $time - $locked_out_time;
+            if($duration > 180) {
+                $sql = "DELETE FROM `locked_out_users_create_account` WHERE ip = '$ip' AND user_agent = '$user_agent'";
+                if ($conn->query($sql) === FALSE) {
+                    echo "error deleting locked out user" . $conn->error;
+                }
+                return FALSE;
+            }else {
+                return TRUE;
+            }
+        }else {
+            return FALSE;
+        }
+    }
+    function login_event_recorder($ip,$user_agent,$username,$successful){
+        include "con_file.php";
+        $sql = "INSERT INTO login_events (ip, user_agent, username, successful)
+            VALUES ('$ip','$user_agent','$username','$successful')";
         if ($conn->query($sql) === FALSE) {
             echo "error recording login event" . $conn->error;
         }

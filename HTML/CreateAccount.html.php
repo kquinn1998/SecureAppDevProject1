@@ -1,9 +1,34 @@
 <?php
 	include 'config.php';
+	include 'functions.php';
 	session_start();
     if (isset($_SESSION['loggedin'])) {
 		header('location:WelcomePage.html.php');
+	}
+	
+	if(!isset($_SESSION['ip'])){
+        $_SESSION['ip'] = get_client_ip();
     }
+    if(!isset($_SESSION['user_agent'])){
+        $_SESSION['user_agent'] = get_user_agent();
+    }
+
+	$_SESSION['attempts_create_account'] = check_attempts_create_account($_SESSION['ip'],$_SESSION['user_agent']);
+
+	//Check attempts and lockout if 5 or above
+	if (isset($_SESSION['attempts_create_account'])){
+		if ($_SESSION['attempts_create_account'] >= 5) {
+			$_SESSION['locked_out_create_account'] = TRUE;
+			clear_attempts_create_account($_SESSION['ip'], $_SESSION['user_agent']);
+			lockout_user_create_account($_SESSION['ip'], $_SESSION['user_agent'], time());
+			$_SESSION['attempts_create_account'] = 0;
+		}
+	}
+	if(isset($_SESSION['ip'])) {
+		if(!check_if_user_locked_out_create_account($_SESSION['ip'], $_SESSION['user_agent'])){
+			$_SESSION['locked_out_create_account'] = FALSE;
+		}
+	}
 ?>
 
 <!DOCTYPE html>
@@ -59,27 +84,63 @@
 						<span class="focus-input100" data-placeholder="&#xf191;"></span>
 					</div>
 
+					<div class="wrap-input100 validate-input" data-validate="Confirm password">
+						<input class="input100" type="password" name="confirm_pass" placeholder="Confirm Password">
+						<span class="focus-input100" data-placeholder="&#xf191;"></span>
+					</div>
+
 					<?php
-					if (isset($_SESSION['error_username'])) {
-						echo "	<div class='text-center p-t-10'>
-									<a class='txt1'>
-										" . $_SESSION['error_username'] . "
-									</a>
-								</div>";
-					}		
-					if (isset($_SESSION['error_password'])) {
-						echo "	<div class='text-center p-t-10'>
-									<a class='txt1'>
-										" . $_SESSION['error_password'] . "
-									</a>
-								</div>";
-					}			
+						if (isset($_SESSION['error_username'])) {
+							echo "	<div class='text-center p-t-10'>
+										<a class='txt1'>
+											" . $_SESSION['error_username'] . "
+										</a>
+									</div>";
+						}		
+						if (isset($_SESSION['error_password'])) {
+							echo "	<div class='text-center p-t-10'>
+										<a class='txt1'>
+											" . $_SESSION['error_password'] . "
+										</a>
+									</div>";
+						}			
 					?>
 
-					<div class="container-login100-form-btn p-t-20">
-						<button class="login100-form-btn" type="submit">
-							Create
-						</button>
+					<?php
+						if (isset($_SESSION['locked_out_create_account'])){
+							if ($_SESSION['locked_out_create_account'] == TRUE) {
+								echo "	<div class='text-center p-t-10'>
+											<a class='txt1'>
+												You are locked out.
+											</a>
+										</div>";
+							}else {
+								echo "<div class='container-login100-form-btn'>
+										<button class='login100-form-btn'>
+											Create Account
+										</button>
+									</div>";
+							}
+						}else {
+							echo "<div class='container-login100-form-btn'>
+										<button class='login100-form-btn'>
+											Create Account
+										</button>
+									</div>";
+						}
+						?>
+
+						<?php	
+						if (isset($_SESSION['attempts_create_account'])) {
+							if ($_SESSION['attempts_create_account'] > 0) {
+								echo "	<div class='text-center p-t-10'>
+											<a class='txt1'>
+												You have used " . $_SESSION['attempts_create_account'] . " of your 5 attempts.
+											</a>
+										</div>";
+							}
+						}	
+					?>
 					</div>
 				</form>
 			</div>
