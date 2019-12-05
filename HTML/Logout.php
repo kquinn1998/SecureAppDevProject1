@@ -1,6 +1,6 @@
 <?php
     include 'con_file.php';
-
+    ini_set('session.cookie_httponly', 1);
     session_start();
 
     //set user as inactive

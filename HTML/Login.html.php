@@ -1,6 +1,7 @@
 <?php
 	include 'config.php';
 	include 'functions.php';
+	ini_set('session.cookie_httponly', 1);
 	session_start();
     if (isset($_SESSION['username'])) {
 		header('location:WelcomePage.html.php');
